@@ -1,0 +1,26 @@
+// $ADAPTERNAME$ -> fileNameWithoutExtension()
+
+class $ADAPTERNAME$ : androidx.recyclerview.widget.RecyclerView.Adapter<$ADAPTERNAME$.CustomViewHolder>() {
+
+    override fun onCreateViewHolder(
+        parent: android.view.ViewGroup,
+        viewType: Int
+    ): CustomRecyclerViewAdapter.CustomViewHolder {
+        // $LAYOUT$ -> completeSmart()
+        val view = android.view.LayoutInflater.from(parent.context).inflate(R.layout.$LAYOUT$, parent, false)
+        return CustomViewHolder(view)
+    }
+
+    override fun getItemCount(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBindViewHolder(holder: CustomRecyclerViewAdapter.CustomViewHolder, position: Int) {
+        TODO("Not yet implemented")
+    }
+
+    class CustomViewHolder(itemView: android.view.View): androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+
+    }
+
+}
