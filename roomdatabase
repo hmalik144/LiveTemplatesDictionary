@@ -1,0 +1,60 @@
+// TODO: add these dependencies
+// def room_version = "2.2.5"
+// implementation "androidx.room:room-runtime:$room_version"
+// kapt "androidx.room:room-compiler:$room_version"
+// implementation "androidx.room:room-ktx:$room_version"
+
+@androidx.room.Database(
+    entities = [EntityItem::class],
+    version = 1
+)
+abstract class $DATABASENAME$Database : androidx.room.RoomDatabase() {
+
+    abstract fun getSimpleDao(): SimpleDao
+
+    companion object {
+
+        @Volatile
+        private var instance: $DATABASENAME$Database? = null
+        private val LOCK = Any()
+
+        // create an instance of room database or use previously created instance
+        operator fun invoke(context: android.content.Context) = instance ?: synchronized(LOCK) {
+            instance ?: buildDatabase(context).also {
+                instance = it
+            }
+        }
+
+        private fun buildDatabase(context: android.content.Context) =
+            androidx.room.Room.databaseBuilder(
+                context.applicationContext,
+                $DATABASENAME$Database::class.java,
+                "MyDatabase.db"
+            ).build()
+    }
+}
+
+@androidx.room.Entity
+data class EntityItem(
+    @androidx.room.PrimaryKey(autoGenerate = false)
+    val id: Int?
+)
+
+@androidx.room.Dao
+interface SimpleDao {
+
+    @androidx.room.Insert(onConflict = androidx.room.OnConflictStrategy.REPLACE)
+    fun saveAllItems(items : List<EntityItem>)
+
+    @androidx.room.Query("SELECT * FROM EntityItem")
+    fun getAllItems() : androidx.lifecycle.LiveData<List<EntityItem>>
+
+    @androidx.room.Query("SELECT * FROM EntityItem WHERE id = :id")
+    fun getItem(id: Int) : androidx.lifecycle.LiveData<EntityItem>
+
+    @androidx.room.Query("DELETE FROM EntityItem")
+    suspend fun deleteEntries()
+
+    @androidx.room.Delete
+    fun deleteEntry(item: EntityItem)
+}
