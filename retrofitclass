@@ -1,0 +1,71 @@
+// TODO: add dependencies
+//implementation 'com.squareup.retrofit2:retrofit:2.8.1'
+//implementation 'com.squareup.retrofit2:converter-gson:2.8.1'
+
+// $APICLASSNAME$ -> fileNameWithoutExtension()
+
+interface $APICLASSNAME$ {
+
+    @retrofit2.http.GET("path?")
+    suspend fun getFromApi(@retrofit2.http.Query("query") query: String): retrofit2.Response<ApiResponse>
+
+    // invoke method creating an invocation of the api call
+    companion object{
+        operator fun invoke(
+            // injected @params
+            networkConnectionInterceptor: NetworkConnectionInterceptor
+        ) : $APICLASSNAME$ {
+            
+            // TODO: Change me
+            val baseUrl = "$BASEURL$"
+
+            // okHttpClient with interceptors
+            val okkHttpclient = okhttp3.OkHttpClient.Builder()
+                .addNetworkInterceptor(networkConnectionInterceptor)
+                .build()
+
+            // creation of retrofit class
+            return retrofit2.Retrofit.Builder()
+                .client(okkHttpclient)
+                .baseUrl(baseUrl)
+                .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
+                .build()
+                .create($APICLASSNAME$::class.java)
+        }
+    }
+}
+
+data class ApiResponse(
+    val res: Map<String, Any>
+)
+
+class NetworkConnectionInterceptor(
+    context: android.content.Context
+) : okhttp3.Interceptor {
+
+    private val applicationContext = context.applicationContext
+
+    override fun intercept(chain: okhttp3.Interceptor.Chain): okhttp3.Response {
+        if (!isInternetAvailable()){
+            throw java.io.IOException("Make sure you have an active data connection")
+        }
+        return chain.proceed(chain.request())
+    }
+
+    private fun isInternetAvailable(): Boolean {
+        var result = false
+        val connectivityManager =
+            applicationContext.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager?
+        connectivityManager?.let {
+            it.getNetworkCapabilities(connectivityManager.activeNetwork)?.apply {
+                result = when {
+                    hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) -> true
+                    hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                    else -> false
+                }
+            }
+        }
+        return result
+    }
+
+}
