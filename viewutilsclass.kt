@@ -27,3 +27,5 @@ fun android.view.View.navigateTo(navigationId: Int) {
 fun android.view.View.navigateTo(navDirections: androidx.navigation.NavDirections) {
     androidx.navigation.Navigation.findNavController(this).navigate(navDirections)
 }
+
+// Applicable in Kotlin: top-level
