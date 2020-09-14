@@ -8,14 +8,14 @@
     entities = [EntityItem::class],
     version = 1
 )
-abstract class $DATABASENAME$Database : androidx.room.RoomDatabase() {
+abstract class $DATABASENAME$ : androidx.room.RoomDatabase() {
 
     abstract fun getSimpleDao(): SimpleDao
 
     companion object {
 
         @Volatile
-        private var instance: $DATABASENAME$Database? = null
+        private var instance: $DATABASENAME$? = null
         private val LOCK = Any()
 
         // create an instance of room database or use previously created instance
@@ -28,7 +28,7 @@ abstract class $DATABASENAME$Database : androidx.room.RoomDatabase() {
         private fun buildDatabase(context: android.content.Context) =
             androidx.room.Room.databaseBuilder(
                 context.applicationContext,
-                $DATABASENAME$Database::class.java,
+                $DATABASENAME$::class.java,
                 "MyDatabase.db"
             ).build()
     }
