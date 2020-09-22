@@ -1,3 +1,4 @@
+// Dependencies to be added to app/build.gradle:
 //def scarlet_version = '0.1.9'
 //implementation "com.tinder.scarlet:scarlet:${scarlet_version}"
 //implementation "com.tinder.scarlet:websocket-okhttp:${scarlet_version}"
